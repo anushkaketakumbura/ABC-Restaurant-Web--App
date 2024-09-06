@@ -15,30 +15,28 @@ public class QueryServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Retrieve query parameters from the request
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String query = request.getParameter("query");
 
-        // Get user ID from the session and convert it to int
         HttpSession session = request.getSession(false);
         int userId = 0; // Default value for userId
         if (session != null) {
             Object userIdObj = session.getAttribute("userId");
             if (userIdObj instanceof Integer) {
-                userId = (Integer) userIdObj; // Direct cast if it's already an Integer
+                userId = (Integer) userIdObj; 
             } else if (userIdObj instanceof String) {
                 try {
-                    userId = Integer.parseInt((String) userIdObj); // Convert String to int
+                    userId = Integer.parseInt((String) userIdObj); 
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     request.setAttribute("message", "Invalid user ID format.");
-                    request.getRequestDispatcher("confirmation.jsp").forward(request, response);
+                    request.getRequestDispatcher("customer_dashboard.jsp").forward(request, response);
                     return;
                 }
             } else {
                 request.setAttribute("message", "Invalid user ID format.");
-                request.getRequestDispatcher("confirmation.jsp").forward(request, response);
+                request.getRequestDispatcher("customer_dashboard.jsp").forward(request, response);
                 return;
             }
         }
@@ -47,12 +45,13 @@ public class QueryServlet extends HttpServlet {
 
         // Insert query into the database
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String sql = "INSERT INTO user_queries (user_id, name, email, query) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO user_queries (user_id, name, email, query, answer) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setInt(1, userId);
                 pstmt.setString(2, name);
                 pstmt.setString(3, email);
                 pstmt.setString(4, query);
+                pstmt.setString(5, "answer");
                 pstmt.executeUpdate();
                 success = true;
             }
@@ -66,6 +65,6 @@ public class QueryServlet extends HttpServlet {
         }
 
         // Forward to the confirmation page
-        request.getRequestDispatcher("confirmation.jsp").forward(request, response);
+        request.getRequestDispatcher("customer_dashboard.jsp").forward(request, response);
     }
 }
