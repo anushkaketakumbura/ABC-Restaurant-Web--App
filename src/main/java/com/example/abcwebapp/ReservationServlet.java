@@ -33,7 +33,7 @@ public class ReservationServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
 
-            String sql = "INSERT INTO reservations (user_id, service_type, reservation_date, reservation_time, participants, customer_name, contact_details, special_requests, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO reservations (user_id, service_type, reservation_date, reservation_time, participants, customer_name, contact_details, special_requests, payment_status, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, userId);
                 statement.setString(2, serviceType);
@@ -44,6 +44,7 @@ public class ReservationServlet extends HttpServlet {
                 statement.setString(7, contactDetails);
                 statement.setString(8, specialRequests);
                 statement.setString(9, paymentStatus);
+                statement.setString(10, "Pending");
 
                 statement.executeUpdate();
             }
