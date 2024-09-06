@@ -51,7 +51,7 @@ public class QueryServlet extends HttpServlet {
                 pstmt.setString(2, name);
                 pstmt.setString(3, email);
                 pstmt.setString(4, query);
-                pstmt.setString(5, "answer");
+                pstmt.setString(5, "");
                 pstmt.executeUpdate();
                 success = true;
             }
